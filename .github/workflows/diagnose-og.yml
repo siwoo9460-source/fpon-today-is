@@ -1,0 +1,50 @@
+name: Diagnose OG Preview
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/diagnose-og.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for Pages
+        run: sleep 45
+      - name: Test page and image
+        run: |
+          mkdir -p diagnostics
+          {
+            echo "=== PAGE HEADERS ==="
+            curl -sSIL --max-time 20 https://siwoo9460-source.github.io/fpon-today-is/weekly/2026-08-week4-v3.html || true
+            echo
+            echo "=== IMAGE HEADERS ==="
+            curl -sSIL --max-time 20 https://siwoo9460-source.github.io/fpon-today-is/weekly/2026-08-week4-v3-share.jpg || true
+            echo
+            echo "=== PAGE META ==="
+            curl -sSL --max-time 20 https://siwoo9460-source.github.io/fpon-today-is/weekly/2026-08-week4-v3.html | grep -oE '<meta[^>]+(og:|twitter:)[^>]+>' || true
+            echo
+            echo "=== IMAGE IDENTIFY ==="
+            curl -sSL --max-time 20 -o /tmp/og.jpg https://siwoo9460-source.github.io/fpon-today-is/weekly/2026-08-week4-v3-share.jpg || true
+            file /tmp/og.jpg || true
+            python3 - <<'PY'
+          from PIL import Image
+          try:
+              im=Image.open('/tmp/og.jpg')
+              print('PIL:', im.format, im.size, im.mode)
+          except Exception as e:
+              print('PIL ERROR:', repr(e))
+          PY
+          } > diagnostics/week4-v3.txt 2>&1
+      - name: Commit diagnostics
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add diagnostics/week4-v3.txt
+          git commit -m "Diagnose Week 4 V3 OG preview" || exit 0
+          git push
