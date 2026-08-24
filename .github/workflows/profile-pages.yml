@@ -38,13 +38,19 @@ jobs:
           rsync -av --exclude='.git' --exclude='.github' --exclude='_site' ./ _site/
           python - <<'PY'
           from pathlib import Path
-          import base64
+          import base64, binascii
           for name in ['profile-photo.jpg','profile-og.jpg']:
               src = Path(name).read_bytes()
-              if src.startswith(b'\xff\xd8\xff'):
-                  out = src
-              else:
-                  out = base64.b64decode(b''.join(src.split()))
+              out = src
+              if not src.startswith(b'\xff\xd8\xff'):
+                  compact = b''.join(src.split())
+                  compact += b'=' * ((4 - len(compact) % 4) % 4)
+                  try:
+                      decoded = base64.b64decode(compact, validate=False)
+                      if decoded.startswith(b'\xff\xd8\xff'):
+                          out = decoded
+                  except (binascii.Error, ValueError):
+                      pass
               Path('_site', name).write_bytes(out)
           PY
           mkdir -p _site/profile
