@@ -5,6 +5,8 @@ on:
     branches: ["main"]
     paths:
       - "profile.html"
+      - "profile-photo.jpg"
+      - "profile-og.jpg"
       - ".github/workflows/profile-pages.yml"
   workflow_dispatch:
 
@@ -31,6 +33,8 @@ jobs:
         run: |
           mkdir -p _site/profile
           cp profile.html _site/profile/index.html
+          cp profile-photo.jpg _site/profile/profile-photo.jpg
+          cp profile-og.jpg _site/profile/profile-og.jpg
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
