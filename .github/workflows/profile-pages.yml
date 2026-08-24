@@ -36,10 +36,17 @@ jobs:
         run: |
           mkdir -p _site
           rsync -av --exclude='.git' --exclude='.github' --exclude='_site' ./ _site/
-          # The two profile image files are stored as Base64 text in the repository.
-          # Decode them to real JPEG files for browsers and social preview crawlers.
-          base64 -d profile-photo.jpg > _site/profile-photo.jpg
-          base64 -d profile-og.jpg > _site/profile-og.jpg
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          for name in ['profile-photo.jpg','profile-og.jpg']:
+              src = Path(name).read_bytes()
+              if src.startswith(b'\xff\xd8\xff'):
+                  out = src
+              else:
+                  out = base64.b64decode(b''.join(src.split()))
+              Path('_site', name).write_bytes(out)
+          PY
           mkdir -p _site/profile
           cp profile.html _site/profile/index.html
           cp _site/profile-photo.jpg _site/profile/profile-photo.jpg
