@@ -43,22 +43,23 @@ function lists(){
  if(e('topAum'))e('topAum').innerHTML=aum?'<span><b>자산 TOP</b> '+aum[1]+' '+aum[2]+'</span><strong>'+fmt(aum[7])+'억</strong>':'-';
  if(e('topOld'))e('topOld').innerHTML=old?'<span><b>가장 오래된 펀드</b> '+old[1]+' '+old[2]+'</span><strong>'+old[3]+'</strong>':'-';
 }
-function addDataNotice(){
- var controls=document.querySelector('.controls');if(!controls||typeof DATA_META==='undefined')return;
+function syncDataNotice(){
+ if(typeof DATA_META==='undefined')return;
+ var section=[].slice.call(document.querySelectorAll('section.sec')).find(function(s){var h=s.querySelector('h2.title');return h&&h.textContent.indexOf('교보생명 변액보험')>=0});
+ if(!section)return;
+ var oldAlerts=[].slice.call(section.querySelectorAll('.alert'));
+ oldAlerts.forEach(function(a){a.remove()});
+ var controls=section.querySelector('.controls');if(!controls)return;
  var d=document.createElement('div');d.className='alert';d.style.marginBottom='12px';
- d.innerHTML='<b>교보생명 변액보험 기준가 · '+DATA_META.date+' 공식 공시 기준</b><br>공식 공시 화면에서 숫자를 선명하게 확인할 수 있는 <b>'+DATA_META.verified+'개 / '+DATA_META.total+'개</b> 펀드를 오늘 값으로 반영했습니다. 확인되지 않은 펀드는 임의 수치를 넣지 않고 <b>-</b>로 표시합니다. TOP 순위는 오늘 값이 확인된 펀드만 대상으로 계산합니다.';
- controls.parentNode.insertBefore(d,controls)
+ d.innerHTML='<b>교보생명 변액보험 기준가 · '+DATA_META.date+' 공식 공시 기준</b><br>오늘 업로드된 교보생명 공식 공시 화면에서 <b>'+DATA_META.verified+'개 / '+DATA_META.total+'개</b> 펀드의 기준가·전일대비·순자산을 확인해 반영했습니다. 확인되지 않은 '+(DATA_META.total-DATA_META.verified)+'개 펀드는 임의 수치를 사용하지 않고 <b>-</b>로 표시합니다. TOP10·상승/하락 TOP5·TOP OF TOP은 오늘 값이 확인된 펀드만 대상으로 자동 계산합니다.';
+ controls.parentNode.insertBefore(d,controls);
+ var footer=document.querySelector('footer');if(footer){footer.innerHTML='※ 교보생명 변액보험 데이터는 <b>'+DATA_META.date+' 공식 공시 화면 기준</b>입니다. 현재 '+DATA_META.verified+'/'+DATA_META.total+'개 펀드 확인 완료, 미확인 펀드는 임의 수치를 사용하지 않고 -로 표시합니다.<br>※ 전일대비 수익률은 (당일 기준가-전일 기준가) ÷ 전일 기준가 × 100 방식으로 계산합니다.'}
 }
 function addDailyActionCards(){
  var target=[].slice.call(document.querySelectorAll('section.sec')).find(function(s){var h=s.querySelector('h2.title');return h&&h.textContent.indexOf('교보생명 변액보험')>=0});
  if(!target||document.getElementById('daily-action-cards'))return;
  var sec=document.createElement('section');sec.className='sec';sec.id='daily-action-cards';
- sec.innerHTML='<h2 class="title">오늘의 고객 체크 & 생활금융</h2>'+
- '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">'+
- '<div class="card" style="background:#fff9f1;border:1px solid #f0dfc7"><div style="font-weight:900;color:#b76b18;margin-bottom:8px">🧾 오늘의 고객 체크포인트</div><b style="display:block;font-size:16px;margin-bottom:8px">보험금 청구 누락·숨은보험금 확인</b><p style="margin:0 0 10px;line-height:1.65;color:#596273;font-size:13px">금융위원회는 숨은보험금 약 10조3천억원을 안내하고 있습니다. 최근 입원·수술·검사·통원 이력이 있는 고객은 청구 누락 여부를 한 번 점검해보세요.</p><div class="point"><b>오늘의 ACTION</b> 최근 병원 이용 고객 3명에게 청구 가능 여부 확인하기</div></div>'+
- '<div class="card" style="background:#f6fbf8;border:1px solid #d9ebe0"><div style="font-weight:900;color:#238258;margin-bottom:8px">💰 오늘의 세금·연금 한 줄</div><b style="display:block;font-size:16px;margin-bottom:8px">연금저축·IRP는 납입만큼 ‘공제 적용 여부’ 점검</b><p style="margin:0 0 10px;line-height:1.65;color:#596273;font-size:13px">연금계좌는 총급여·종합소득 수준에 따라 세액공제율이 달라질 수 있습니다. 연말에 몰아서 보기보다 현재 납입액과 공제 적용 가능 금액을 미리 점검하는 것이 좋습니다.</p><div class="point"><b>FPON POINT</b> 납입액·공제율·향후 연금수령 시 과세까지 함께 보세요.</div></div>'+
- '<div class="card" style="background:#f5f8ff;border:1px solid #dce4f4"><div style="font-weight:900;color:#315da8;margin-bottom:8px">🏦 오늘의 생활금융</div><b style="display:block;font-size:16px;margin-bottom:8px">금리 결정 전 대출 조건 다시 보기</b><p style="margin:0 0 10px;line-height:1.65;color:#596273;font-size:13px">한국은행 금통위를 앞두고 금리 방향에 관심이 커지는 시점입니다. 변동금리 대출이 있는 고객은 금리·만기·상환방식·중도상환 조건을 함께 점검해보세요.</p><div class="point"><b>오늘의 ACTION</b> 고금리·변동금리 대출 보유 고객 상담 후보 정리하기</div></div>'+
- '</div><style>@media(max-width:900px){#daily-action-cards>div{grid-template-columns:1fr!important}}</style>';
+ sec.innerHTML='<h2 class="title">오늘의 고객 체크 & 생활금융</h2><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px"><div class="card" style="background:#fff9f1;border:1px solid #f0dfc7"><div style="font-weight:900;color:#b76b18;margin-bottom:8px">🧾 오늘의 고객 체크포인트</div><b style="display:block;font-size:16px;margin-bottom:8px">보험금 청구 누락·숨은보험금 확인</b><p style="margin:0 0 10px;line-height:1.65;color:#596273;font-size:13px">최근 입원·수술·검사·통원 이력이 있는 고객은 청구 누락 여부를 한 번 점검해보세요.</p><div class="point"><b>오늘의 ACTION</b> 최근 병원 이용 고객 3명에게 청구 가능 여부 확인하기</div></div><div class="card" style="background:#f6fbf8;border:1px solid #d9ebe0"><div style="font-weight:900;color:#238258;margin-bottom:8px">💰 오늘의 세금·연금 한 줄</div><b style="display:block;font-size:16px;margin-bottom:8px">연금저축·IRP는 납입만큼 공제 적용 여부 점검</b><p style="margin:0 0 10px;line-height:1.65;color:#596273;font-size:13px">연말에 몰아서 보기보다 현재 납입액과 공제 적용 가능 금액을 미리 점검하는 것이 좋습니다.</p><div class="point"><b>FPON POINT</b> 납입액·공제율·향후 연금수령 시 과세까지 함께 보세요.</div></div><div class="card" style="background:#f5f8ff;border:1px solid #dce4f4"><div style="font-weight:900;color:#315da8;margin-bottom:8px">🏦 오늘의 생활금융</div><b style="display:block;font-size:16px;margin-bottom:8px">금리 결정 전 대출 조건 다시 보기</b><p style="margin:0 0 10px;line-height:1.65;color:#596273;font-size:13px">변동금리 대출이 있는 고객은 금리·만기·상환방식·중도상환 조건을 함께 점검해보세요.</p><div class="point"><b>오늘의 ACTION</b> 고금리·변동금리 대출 보유 고객 상담 후보 정리하기</div></div></div><style>@media(max-width:900px){#daily-action-cards>div{grid-template-columns:1fr!important}}</style>';
  target.parentNode.insertBefore(sec,target);
 }
 document.querySelectorAll('.tab').forEach(function(b){b.onclick=function(){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');active=b.dataset.g;sortKey='default';sortDir='asc';render()}});
@@ -66,5 +67,5 @@ document.querySelectorAll('.sortable').forEach(function(th){th.onclick=function(
 e('search').oninput=render;
 window.copySummary=function(){var a=sortedAnnual(1)[0],b=FUNDS.filter(r=>r[4]!=null).slice().sort((x,y)=>y[4]-x[4])[0],c=FUNDS.filter(r=>r[7]!=null).slice().sort((x,y)=>y[7]-x[7])[0];navigator.clipboard.writeText('FPON TODAY IS... | 2026.08.26\n교보생명 변액보험: 2026.08.26 공식 공시 캡처 기준 '+DATA_META.verified+'/'+DATA_META.total+'개 확인\n오늘의 고객 체크: 보험금 청구 누락·숨은보험금 확인\n연환산 TOP(확인분): '+(a?a[1]+' '+a[2]+' '+fmt(a[6])+'%':'-')+'\n기준가 TOP(확인분): '+(b?b[1]+' '+b[2]+' '+fmt(b[4]):'-')+'\n자산 TOP(확인분): '+(c?c[1]+' '+c[2]+' '+fmt(c[7])+'억':'-')).then(()=>alert('오늘 요약을 복사했습니다.'))};
 if(typeof FUNDS==='undefined'){e('tbody').innerHTML='<tr><td colspan="10" class="loading">변액보험 데이터 로딩 실패</td></tr>';return}
-addDailyActionCards();addDataNotice();render();lists()
+addDailyActionCards();syncDataNotice();render();lists()
 })();
