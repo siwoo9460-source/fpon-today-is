@@ -1,0 +1,43 @@
+name: Daily FPON OG sync
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data.js'
+      - 'daily-today.js'
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update root Open Graph for 2026-08-29
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          s=re.sub(r'<title>FPON TODAY IS\.\.\. \| [^<]+</title>', '<title>FPON TODAY IS... | 2026.08.29</title>', s, count=1)
+          s=re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="2026.08.29 FPON · FP의 오늘을 준비하는 데일리 브리핑">', s, count=1)
+          s=re.sub(r'<meta property="og:title" content="[^"]*">', '<meta property="og:title" content="FPON TODAY IS... | 2026.08.29">', s, count=1)
+          s=re.sub(r'<meta property="og:description" content="[^"]*">', '<meta property="og:description" content="오늘의 뉴스 · 경제지표 · 교보생명 변액보험 기준가 현황을 한눈에 확인하세요.">', s, count=1)
+          s=re.sub(r'<meta property="og:image" content="[^"]*">', '<meta property="og:image" content="https://siwoo9460-source.github.io/fpon-today-is/og/fp-20260829.png?v=20260829-2">', s, count=1)
+          s=re.sub(r'<meta property="og:image:secure_url" content="[^"]*">', '<meta property="og:image:secure_url" content="https://siwoo9460-source.github.io/fpon-today-is/og/fp-20260829.png?v=20260829-2">', s, count=1)
+          s=re.sub(r'<meta name="twitter:title" content="[^"]*">', '<meta name="twitter:title" content="FPON TODAY IS... | 2026.08.29">', s, count=1)
+          s=re.sub(r'<meta name="twitter:description" content="[^"]*">', '<meta name="twitter:description" content="오늘의 뉴스 · 경제지표 · 교보생명 변액보험 기준가 현황을 한눈에 확인하세요.">', s, count=1)
+          s=re.sub(r'<meta name="twitter:image" content="[^"]*">', '<meta name="twitter:image" content="https://siwoo9460-source.github.io/fpon-today-is/og/fp-20260829.png?v=20260829-2">', s, count=1)
+          s=re.sub(r'<div class="date">[^<]*</div>', '<div class="date">2026.08.29 (토) · 주말 브리핑</div>', s, count=1)
+          s=s.replace('style.css?v=20260828-6','style.css?v=20260829-2')
+          s=s.replace('data.js?v=20260828-6','data.js?v=20260829-2')
+          s=s.replace('app.js?v=20260828-6','app.js?v=20260829-2')
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit root metadata refresh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "Refresh FPON root metadata for 2026-08-29"
+          git push
