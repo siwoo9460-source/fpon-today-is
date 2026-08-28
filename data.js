@@ -1,1 +1,1 @@
-document.write('<script src="funds-data.js?v=20260829-1"><\/script>');
+document.write('<script src="funds-data.js?v=20260829-1"><\/script><script src="daily-today.js?v=20260829-1"><\/script>');
