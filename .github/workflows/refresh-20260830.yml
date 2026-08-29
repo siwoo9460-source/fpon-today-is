@@ -1,0 +1,64 @@
+name: Refresh FPON 2026-08-30
+on:
+  push:
+    paths:
+      - '.github/workflows/refresh-20260830.yml'
+permissions:
+  contents: write
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pillow
+      - name: Generate 1200x630 OG image and refresh root metadata
+        run: |
+          python - <<'PY'
+          from PIL import Image, ImageDraw, ImageFont
+          from pathlib import Path
+          import re
+          W,H=1200,630
+          img=Image.new('RGB',(W,H),(245,248,252)); d=ImageDraw.Draw(img)
+          reg='/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc'
+          bold='/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc'
+          if not Path(reg).exists(): reg='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+          if not Path(bold).exists(): bold=reg
+          navy=(24,58,102); blue=(45,103,168); ink=(31,44,58); muted=(90,103,120); white=(255,255,255); line=(221,230,240)
+          d.rounded_rectangle((40,40,1160,590),38,fill=white,outline=line,width=2)
+          d.rounded_rectangle((40,40,1160,170),38,fill=(236,244,253))
+          f1=ImageFont.truetype(bold,58); f2=ImageFont.truetype(bold,42); f3=ImageFont.truetype(reg,25); f4=ImageFont.truetype(bold,30); f5=ImageFont.truetype(reg,22); f6=ImageFont.truetype(bold,24)
+          d.text((78,72),'FPON',font=f1,fill=navy); d.text((250,82),'TODAY IS...',font=f2,fill=blue); d.text((80,145),'2026.08.30 · SUNDAY BRIEF',font=f3,fill=muted)
+          d.text((80,220),'주말엔 숫자보다 ‘정리’가 먼저입니다',font=f4,fill=ink)
+          d.text((80,268),'이번 주 시장 흐름 · 보험금 청구 · 변액보험 공시 체크',font=f5,fill=muted)
+          blocks=[('시장','코스피 6,788.88\nS&P500 7,711.76'),('생활','휘발유 1,861원/L\n경유 1,845원/L'),('변액보험','공식 공시 재확인\n8/28 검증본 유지')]
+          x=80
+          for title,txt in blocks:
+              d.rounded_rectangle((x,350,x+310,505),24,fill=(248,250,253),outline=line,width=2); d.text((x+24,372),title,font=f6,fill=blue); d.multiline_text((x+24,414),txt,font=f5,fill=ink,spacing=8); x+=340
+          d.text((80,545),'오늘의 뉴스 · 경제지표 · 교보생명 변액보험 기준가 현황을 한눈에',font=f5,fill=navy)
+          Path('og').mkdir(exist_ok=True); img.save('og/fp-20260830.png')
+
+          p=Path('index.html'); s=p.read_text(encoding='utf-8')
+          s=re.sub(r'<title>FPON TODAY IS\.\.\. \| \d{4}\.\d{2}\.\d{2}</title>','<title>FPON TODAY IS... | 2026.08.30</title>',s)
+          s=re.sub(r'<meta name="description" content="[^"]*">','<meta name="description" content="2026.08.30 FPON · FP의 오늘을 준비하는 데일리 브리핑">',s,count=1)
+          s=re.sub(r'<meta property="og:title" content="[^"]*">','<meta property="og:title" content="FPON TODAY IS... | 2026.08.30">',s,count=1)
+          s=re.sub(r'<meta property="og:description" content="[^"]*">','<meta property="og:description" content="오늘의 뉴스 · 경제지표 · 교보생명 변액보험 기준가 현황을 한눈에 확인하세요.">',s,count=1)
+          s=re.sub(r'<meta property="og:image" content="[^"]*">','<meta property="og:image" content="https://siwoo9460-source.github.io/fpon-today-is/og/fp-20260830.png?v=20260830-1">',s,count=1)
+          s=re.sub(r'<meta property="og:image:secure_url" content="[^"]*">','<meta property="og:image:secure_url" content="https://siwoo9460-source.github.io/fpon-today-is/og/fp-20260830.png?v=20260830-1">',s,count=1)
+          s=re.sub(r'<meta name="twitter:title" content="[^"]*">','<meta name="twitter:title" content="FPON TODAY IS... | 2026.08.30">',s,count=1)
+          s=re.sub(r'<meta name="twitter:description" content="[^"]*">','<meta name="twitter:description" content="오늘의 뉴스 · 경제지표 · 교보생명 변액보험 기준가 현황을 한눈에 확인하세요.">',s,count=1)
+          s=re.sub(r'<meta name="twitter:image" content="[^"]*">','<meta name="twitter:image" content="https://siwoo9460-source.github.io/fpon-today-is/og/fp-20260830.png?v=20260830-1">',s,count=1)
+          s=re.sub(r'style\.css\?v=[^\"]+','style.css?v=20260830-1',s,count=1)
+          s=re.sub(r'data\.js\?v=[^\"]+','data.js?v=20260830-1',s,count=1)
+          s=re.sub(r'app\.js\?v=[^\"]+','app.js?v=20260830-1',s,count=1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit generated daily assets
+        run: |
+          git config user.name 'fpon-daily-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html og/fp-20260830.png
+          git commit -m 'Publish FPON TODAY IS for 2026-08-30' || exit 0
+          git push
