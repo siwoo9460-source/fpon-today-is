@@ -1,0 +1,37 @@
+name: Patch Week5 Contact Buttons
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/patch-week5-contact-buttons.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update contact button labels and links
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('weekly/2026-08-week5.html')
+          s = p.read_text(encoding='utf-8')
+          old = '<div class="reqBtns"><a href="https://open.kakao.com/o/se4rKbKi">설계 문의</a><a href="tel:01091273949">상담 문의</a><a href="sms:01091273949">문자 문의</a><a href="mailto:siwoo9460@gmail.com">이메일 문의</a></div>'
+          new = '<div class="reqBtns"><a href="tel:01091273949">📞 전화하기</a><a href="https://open.kakao.com/o/se4rKbKi">🟨 카톡하기</a><a href="sms:01091273949">💬 문자 문의</a><a href="mailto:siwoo9460@gmail.com">✉️ 이메일 보내기</a></div>'
+          if old not in s:
+              raise SystemExit('target block not found')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add weekly/2026-08-week5.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Update Week 5 contact buttons"
+            git push
+          fi
