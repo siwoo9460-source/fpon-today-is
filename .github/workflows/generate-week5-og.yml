@@ -1,0 +1,63 @@
+name: Generate Week5 OG
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "weekly/2026-08-week5.html"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-og:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin fonts-noto-cjk python3-pil
+      - name: Render profile
+        run: rsvg-convert -w 300 -h 400 weekly/profile-caricature.svg -o /tmp/profile.png
+      - name: Build share image
+        run: |
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw,ImageFont
+          import glob
+          W,H=1200,630
+          img=Image.new('RGB',(W,H),'#fbfdff'); d=ImageDraw.Draw(img)
+          bc=glob.glob('/usr/share/fonts/opentype/noto/*CJK*Bold*.ttc'); rc=glob.glob('/usr/share/fonts/opentype/noto/*CJK*Regular*.ttc')
+          bold=bc[0] if bc else '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'; reg=rc[0] if rc else '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+          F=lambda p,s: ImageFont.truetype(p,s)
+          navy='#0b357c'; blue='#3e6db7'; ink='#1f2a38'
+          d.ellipse((800,70,1200,470),fill='#f0f5ff'); d.ellipse((900,280,1260,650),fill='#e8f1ff')
+          d.text((68,42),'FPON',font=F(bold,42),fill=navy)
+          d.line((68,95,135,95),fill=navy,width=4)
+          d.text((68,120),'WEEKLY BRIEFING',font=F(bold,64),fill=navy)
+          d.text((68,220),'2026년 8월 5주차',font=F(bold,38),fill=blue)
+          d.text((68,305),'전현창 FP가 전하는 주간 브리핑',font=F(reg,27),fill=ink)
+          d.text((68,360),'재무 · 은퇴 · 건강 · 보험 점검',font=F(bold,40),fill=navy)
+          labels=['이번주 운세','지난주 ISSUE','경제지표 그래프','건강 식단']
+          x=68
+          for lab in labels:
+              w=175 if lab!='경제지표 그래프' else 195
+              d.rounded_rectangle((x,446,x+w,500),radius=26,fill='#fff',outline='#ccd9ea',width=2)
+              tb=d.textbbox((0,0),lab,font=F(bold,20)); tw=tb[2]-tb[0]
+              d.text((x+(w-tw)/2,460),lab,font=F(bold,20),fill=navy); x+=w+14
+          d.rounded_rectangle((68,530,705,590),radius=13,fill='#f4f7fb'); d.rectangle((68,530,75,590),fill=navy)
+          d.text((100,546),'보험은 가입보다 관리에서 가치가 커집니다.',font=F(reg,25),fill=ink)
+          p=Image.open('/tmp/profile.png').convert('RGBA'); p.thumbnail((300,400),Image.Resampling.LANCZOS)
+          img.paste(p,(885+(290-p.width)//2,205),p)
+          img.save('weekly/2026-08-week5-share.jpg','JPEG',quality=92,optimize=True)
+          PY
+      - name: Commit image
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add weekly/2026-08-week5-share.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m "Generate Week 5 share image"
+            git push
+          fi
