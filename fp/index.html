@@ -22,5 +22,18 @@
   </div>
   <div class="note">※ 없는 날짜 자료를 임의로 만들지 않습니다. 앞으로 날짜별 자료를 저장해 이전날·다음날 이동이 가능하도록 유지합니다.</div>
 </div>
-<iframe class="frame" src="../" title="FPON TODAY IS FP용 최신 브리핑"></iframe>
+<iframe id="fpFrame" class="frame" src="../" title="FPON TODAY IS FP용 최신 브리핑"></iframe>
+<script>
+(function(){
+  const frame=document.getElementById('fpFrame');
+  frame.addEventListener('load',function(){
+    try{
+      const doc=frame.contentDocument||frame.contentWindow.document;
+      let st=doc.getElementById('fp-fortune-lotto-stack');
+      if(!st){st=doc.createElement('style');st.id='fp-fortune-lotto-stack';doc.head.appendChild(st)}
+      st.textContent='.fun-grid{display:grid!important;grid-template-columns:1fr!important;gap:12px!important}.fun-grid>.card,.fun-grid>.lotto-card{width:100%!important}.lotto-card{margin-top:0!important}';
+    }catch(e){}
+  });
+})();
+</script>
 </div></body></html>
