@@ -1,0 +1,64 @@
+name: Generate 2026-09 Week1 OG
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "weekly/2026-09-week1.html"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-og:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image and Korean font tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin fonts-noto-cjk python3-pil
+      - name: Render profile caricature
+        run: rsvg-convert -w 300 -h 400 weekly/profile-caricature.svg -o /tmp/profile.png
+      - name: Build 1200x630 share image
+        run: |
+          python3 - <<'PY'
+          from PIL import Image, ImageDraw, ImageFont
+          import glob
+          W,H=1200,630
+          img=Image.new('RGB',(W,H),'#fbfdff'); d=ImageDraw.Draw(img)
+          bolds=glob.glob('/usr/share/fonts/opentype/noto/*CJK*Bold*.ttc')+glob.glob('/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc')
+          regs=glob.glob('/usr/share/fonts/opentype/noto/*CJK*Regular*.ttc')+glob.glob('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc')
+          bold=bolds[0] if bolds else '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+          reg=regs[0] if regs else '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+          F=lambda p,s: ImageFont.truetype(p,s)
+          navy='#0b357c'; ink='#1f2a38'; blue='#3e6db7'; line='#d6e3f3'
+          d.ellipse((790,70,1190,470),fill='#f0f5ff'); d.ellipse((900,270,1260,650),fill='#e8f1ff')
+          d.text((68,42),'FPON',font=F(bold,42),fill=navy)
+          d.line((68,95,135,95),fill=navy,width=4)
+          d.text((68,122),'WEEKLY BRIEFING',font=F(bold,66),fill=navy)
+          d.text((68,225),'2026년 9월 1주차',font=F(bold,38),fill=blue)
+          d.line((68,285,320,285),fill=line,width=2)
+          d.text((68,315),'전현창 FP가 전하는 주간 브리핑',font=F(reg,27),fill=ink)
+          d.text((68,372),'재무 · 은퇴 · 건강 · 보험 점검',font=F(bold,42),fill=navy)
+          labels=['재무설계','은퇴준비','건강관리','보험점검']; x=68
+          for lab in labels:
+              d.rounded_rectangle((x,448,x+155,500),radius=25,fill='#ffffff',outline='#ccd9ea',width=2)
+              bb=d.textbbox((0,0),lab,font=F(bold,21)); tw=bb[2]-bb[0]
+              d.text((x+(155-tw)/2,461),lab,font=F(bold,21),fill=navy); x+=170
+          d.rounded_rectangle((68,532,705,590),radius=13,fill='#f4f7fb'); d.rectangle((68,532,75,590),fill=navy)
+          d.text((100,547),'보험은 가입보다 관리에서 가치가 커집니다.',font=F(reg,25),fill=ink)
+          prof=Image.open('/tmp/profile.png').convert('RGBA'); prof.thumbnail((300,400),Image.Resampling.LANCZOS)
+          px=875+(300-prof.width)//2; py=205; img.paste(prof,(px,py),prof)
+          img.save('weekly/2026-09-week1-share.jpg','JPEG',quality=92,optimize=True)
+          PY
+      - name: Commit generated share image
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add weekly/2026-09-week1-share.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m "Generate 2026-09 week1 share image"
+            git push
+          fi
