@@ -5,6 +5,7 @@ on:
     branches: ["main"]
     paths:
       - "weekly/2026-09-week1.html"
+      - ".github/workflows/generate-2026-09-week1-og.yml"
   workflow_dispatch:
 
 permissions:
