@@ -1,5 +1,6 @@
 (function(){
 if(window.__fponCommonFunLoaded)return;window.__fponCommonFunLoaded=true;
+if(location.pathname.includes('/customer/')){document.querySelectorAll('.switch').forEach(x=>x.remove())}
 const FORTUNES={
 rat:{name:'쥐띠',icon:'🐭',summary:'우선순위를 정하면 흐름이 좋아집니다.',money:'충동지출보다 계획한 소비가 유리합니다.',work:'미뤄둔 연락과 확인 업무를 먼저 처리해보세요.',life:'짧게라도 휴식 시간을 확보하면 집중력이 좋아집니다.'},
 ox:{name:'소띠',icon:'🐮',summary:'꾸준함이 결과를 만드는 날입니다.',money:'큰 변화보다 현재 계획을 지키는 편이 좋습니다.',work:'한 번 정한 순서를 끝까지 유지해보세요.',life:'무리한 일정 대신 생활 리듬을 지키는 것이 좋습니다.'},
