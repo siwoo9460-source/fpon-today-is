@@ -1,0 +1,62 @@
+name: Generate DAILY 2026-09-04 OG
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "daily/2026-09-04.html"
+      - "daily/2026-09-04-share.html"
+      - ".github/workflows/generate-daily-20260904-og.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-og:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Korean font
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk python3-pil
+      - name: Build 1200x630 DAILY share image
+        run: |
+          python3 - <<'PY'
+          from PIL import Image, ImageDraw, ImageFont
+          import glob
+          W,H=1200,630
+          img=Image.new('RGB',(W,H),'#f4f8fc'); d=ImageDraw.Draw(img)
+          bolds=glob.glob('/usr/share/fonts/opentype/noto/*CJK*Bold*.ttc')+glob.glob('/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc')
+          regs=glob.glob('/usr/share/fonts/opentype/noto/*CJK*Regular*.ttc')+glob.glob('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc')
+          bold=bolds[0] if bolds else '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+          reg=regs[0] if regs else '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+          F=lambda p,s: ImageFont.truetype(p,s)
+          navy='#173f67'; blue='#4672a6'; ink='#1f2a38'; muted='#52606f'; line='#d8e3ed'
+          d.rounded_rectangle((42,36,1158,594),radius=28,fill='#ffffff',outline=line,width=2)
+          d.rounded_rectangle((70,64,1130,180),radius=20,fill='#e9f1f9')
+          d.text((96,82),'FPON',font=F(bold,27),fill=navy)
+          d.text((96,121),'DAILY MORNING BRIEFING',font=F(bold,44),fill='#14304b')
+          d.text((96,198),'2026.09.04 FRI',font=F(bold,28),fill='#4b6074')
+          items=[('오늘의 날씨','서울 21~29℃ · 대체로 맑음'),('오늘의 이슈','고향사랑의 날 · 지식재산의 날'),('주요 경제지표','KOSPI 6,579.48 · USD/KRW 1,359.3'),('오늘의 포인트','美 증시 반등 · 금리 우려 완화')]
+          for (title,body),(x,y) in zip(items,[(96,260),(610,260),(96,390),(610,390)]):
+              d.rounded_rectangle((x,y,x+460,y+100),radius=16,fill='#f8fafc',outline='#e4eaf0')
+              d.text((x+20,y+14),title,font=F(bold,22),fill='#264967')
+              d.text((x+20,y+54),body,font=F(reg,19),fill=muted)
+          d.text((96,522),'오늘을 시작하는 1분 브리핑',font=F(bold,24),fill=navy)
+          d.text((866,522),'전현창 FP',font=F(bold,24),fill=navy)
+          img.save('daily/2026-09-04-og.jpg','JPEG',quality=92,optimize=True)
+          PY
+      - name: Commit generated image
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add daily/2026-09-04-og.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m "Generate 2026-09-04 DAILY OG image"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
