@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FPON 성공 마인드</title>
+<meta name="description" content="FPON 성공 마인드 - 오늘의 문장, FPON 해석, 오늘의 다짐, FP 실천 행동, 완료 체크">
+<style>
+:root{--navy:#0b2f57;--blue:#2f6fe4;--sky:#eef5ff;--green:#2f9e62;--orange:#f28c28;--purple:#7b61d1;--ink:#17253b;--muted:#6b778c;--line:#e7ebf1;--bg:#f7f9fc;--card:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:Pretendard,"Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}a{text-decoration:none;color:inherit}
+.app{min-height:100vh;display:grid;grid-template-columns:220px 1fr}.side{background:linear-gradient(180deg,#0d3b6d,#082b50);color:#fff;padding:26px 18px;position:sticky;top:0;height:100vh}.logo{font-size:28px;font-weight:900;letter-spacing:-1px}.logo small{display:block;font-size:11px;font-weight:500;opacity:.7;letter-spacing:0;margin-top:2px}.nav{margin-top:34px;display:grid;gap:8px}.nav a{padding:12px 13px;border-radius:12px;color:#dbe7f6;font-weight:700}.nav a:hover,.nav a.active{background:rgba(255,255,255,.13);color:#fff}.side-bottom{position:absolute;left:18px;right:18px;bottom:24px;font-size:12px;opacity:.8}
+.main{padding:24px 28px 44px;max-width:1440px;width:100%;margin:0 auto}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}.top h1{margin:0;font-size:30px;letter-spacing:-1.2px}.top p{margin:5px 0 0;color:var(--muted)}.home-btn{border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:11px;font-weight:800;color:var(--navy)}
+.layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,.8fr);gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 6px 22px rgba(23,37,59,.04)}.hero{padding:24px;background:linear-gradient(135deg,#0c386b 0%,#183f78 56%,#6b5f93 100%);color:#fff;min-height:360px;position:relative;overflow:hidden}.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.08)}.hero:before{width:260px;height:260px;right:-80px;top:-70px}.hero:after{width:180px;height:180px;left:-70px;bottom:-60px}.badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.14);font-weight:800;font-size:12px}.hero h2{font-size:33px;margin:24px 0 8px;letter-spacing:-1.3px;position:relative;z-index:1}.hanja{font-size:21px;opacity:.9;font-weight:700}.hero .quote{font-size:22px;line-height:1.55;font-weight:800;margin:24px 0 12px;max-width:780px;position:relative;z-index:1}.source{font-size:13px;opacity:.75}.traits{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:20px;position:relative;z-index:1}.trait{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);border-radius:12px;padding:10px 11px;font-size:13px;line-height:1.35}.trait b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.18);margin-right:6px}
+.stack{display:grid;gap:16px}.panel{padding:20px}.panel h3{margin:0 0 13px;font-size:18px}.interpret{background:linear-gradient(135deg,#f6f9ff,#eef5ff)}.interpret p{margin:0;line-height:1.75;color:#32445e;font-weight:600}.commit{background:linear-gradient(135deg,#fbfffc,#f0faf4)}.checkline{display:flex;gap:10px;align-items:flex-start;padding:8px 0;line-height:1.45}.checkdot{width:20px;height:20px;border-radius:50%;background:#e7f7ee;color:var(--green);display:grid;place-items:center;flex:none;font-size:12px;font-weight:900}
+.actions{grid-column:1 / -1;padding:20px}.actions h3,.complete h3,.history h3{margin:0 0 14px}.action-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.action{border:1px solid #f2dfcc;background:#fffaf5;border-radius:14px;padding:14px;line-height:1.45;font-size:13px}.action span{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#fff0df;color:var(--orange);font-weight:900;margin-bottom:8px}
+.complete{grid-column:1 / -1;padding:20px}.progress-wrap{display:grid;grid-template-columns:180px 1fr;gap:20px;align-items:center}.progress-ring{width:148px;height:148px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--blue) calc(var(--p)*1%),#edf0f5 0);position:relative}.progress-ring:after{content:"";position:absolute;width:112px;height:112px;border-radius:50%;background:#fff}.progress-text{position:relative;z-index:1;text-align:center;font-size:28px;font-weight:900;color:var(--navy)}.progress-text small{display:block;font-size:12px;color:var(--muted);font-weight:700}.check-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.check-item{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:11px;background:#fff;cursor:pointer;font-size:13px;line-height:1.35}.check-item input{margin-top:2px;width:18px;height:18px;accent-color:var(--blue)}
+.closing{grid-column:1 / -1;background:linear-gradient(90deg,#fff3df,#fffaf3);padding:18px 22px;text-align:center;font-size:19px;font-weight:900;color:#184273}.history{grid-column:1 / -1;padding:20px}.history-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.history-item{border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;background:#fff;transition:.15s}.history-item:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(23,37,59,.06)}.history-item.active{border-color:#8fb5f4;background:#f7fbff}.history-item .n{color:var(--blue);font-size:12px;font-weight:900}.history-item b{display:block;margin:7px 0 5px}.history-item small{color:var(--muted)}
+@media(max-width:980px){.app{grid-template-columns:1fr}.side{display:none}.main{padding:18px}.layout{grid-template-columns:1fr}.actions,.complete,.closing,.history{grid-column:1}.traits{grid-template-columns:1fr 1fr}.action-grid{grid-template-columns:1fr 1fr}.history-list{grid-template-columns:1fr}.progress-wrap{grid-template-columns:1fr}.progress-ring{margin:auto}.check-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.traits,.action-grid,.check-grid{grid-template-columns:1fr}.hero h2{font-size:27px}.hero .quote{font-size:18px}.top{align-items:flex-start}.top h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="logo">FPON<small>Financial Planner ON</small></div>
+    <nav class="nav">
+      <a href="../">HOME</a>
+      <a href="../daily/2026-09-03.html">DAILY BRIEFING</a>
+      <a href="../weekly/">WEEKLY BRIEFING</a>
+      <a class="active" href="./">성공 마인드</a>
+      <a href="../profile.html">FP PROFILE</a>
+    </nav>
+    <div class="side-bottom">FP의 성공을 함께 만드는 파트너</div>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <div><h1>성공 마인드</h1><p>읽고 끝나는 문장이 아니라, 오늘의 행동으로 연결합니다.</p></div>
+      <a class="home-btn" href="../">FPON HOME</a>
+    </div>
+
+    <section class="layout" id="content"></section>
+  </main>
+</div>
+<script src="data.js?v=20260903-1"></script>
+<script>
+(function(){
+  const data=(window.FPON_SUCCESS_MIND||[]).slice().sort((a,b)=>b.number-a.number);
+  const root=document.getElementById('content');
+  if(!data.length){root.innerHTML='<div class="card panel">등록된 성공 마인드가 없습니다.</div>';return;}
+  let current=data[0];
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const stateKey=id=>'fpon-success-mind-'+id;
+  function getState(id,count){try{const v=JSON.parse(localStorage.getItem(stateKey(id))||'[]');return Array.from({length:count},(_,i)=>!!v[i]);}catch(e){return Array(count).fill(false)}}
+  function saveState(id,state){localStorage.setItem(stateKey(id),JSON.stringify(state))}
+  function render(item){
+    current=item;
+    const checks=item.checks||[];
+    const state=getState(item.id,checks.length);
+    const done=state.filter(Boolean).length;
+    const pct=checks.length?Math.round(done/checks.length*100):0;
+    const traits=(item.traits||[]).map((t,i)=>`<div class="trait"><b>${i+1}</b>${esc(t)}</div>`).join('');
+    const commitments=(item.commitments||[]).map(t=>`<div class="checkline"><span class="checkdot">✓</span><span>${esc(t)}</span></div>`).join('');
+    const actions=(item.actions||[]).map((t,i)=>`<div class="action"><span>${i+1}</span><div>${esc(t)}</div></div>`).join('');
+    const checkHtml=checks.map((t,i)=>`<label class="check-item"><input type="checkbox" data-check="${i}" ${state[i]?'checked':''}><span>${esc(t)}</span></label>`).join('');
+    const history=data.map(h=>`<div class="history-item ${h.id===item.id?'active':''}" data-id="${esc(h.id)}"><div class="n">SUCCESS MIND #${String(h.number).padStart(2,'0')}</div><b>${esc(h.title)}</b><small>${esc(h.date)}</small></div>`).join('');
+    root.innerHTML=`
+      <article class="card hero">
+        <div class="badge">SUCCESS MIND #${String(item.number).padStart(2,'0')} · ${esc(item.date)}</div>
+        <h2>${esc(item.title)}</h2>
+        ${item.hanja?`<div class="hanja">${esc(item.hanja)}</div>`:''}
+        <div class="quote">${esc(item.quote)}</div>
+        <div class="source">— ${esc(item.source||'FPON')}</div>
+        ${traits?`<div class="traits">${traits}</div>`:''}
+      </article>
+      <div class="stack">
+        <section class="card panel interpret"><h3>💡 FPON 해석</h3><p>${esc(item.interpretation)}</p></section>
+        <section class="card panel commit"><h3>🎯 오늘의 다짐</h3>${commitments}</section>
+      </div>
+      <section class="card actions"><h3>🟠 FP 실천 행동</h3><div class="action-grid">${actions}</div></section>
+      <section class="card complete"><h3>🟣 오늘 완료 체크</h3><div class="progress-wrap"><div class="progress-ring" style="--p:${pct}"><div class="progress-text">${done} / ${checks.length}<small>${pct}% 실천 완료</small></div></div><div class="check-grid">${checkHtml}</div></div></section>
+      <section class="card closing">${esc(item.closing||'오늘의 행동이 내일의 결과를 만듭니다.')}</section>
+      <section class="card history"><h3>마인드 히스토리</h3><div class="history-list">${history}</div></section>`;
+    root.querySelectorAll('[data-check]').forEach(el=>el.addEventListener('change',()=>{
+      const s=getState(item.id,checks.length);s[Number(el.dataset.check)]=el.checked;saveState(item.id,s);render(item);
+    }));
+    root.querySelectorAll('.history-item').forEach(el=>el.addEventListener('click',()=>{const next=data.find(x=>x.id===el.dataset.id);if(next)render(next)}));
+  }
+  render(current);
+})();
+</script>
+</body>
+</html>
